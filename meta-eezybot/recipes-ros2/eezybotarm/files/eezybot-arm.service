@@ -1,0 +1,21 @@
+[Unit]
+Description=EezyBotArm ROS 2 launch
+After=network.target
+
+[Service]
+Type=simple
+# Defaults for the production image (headless, real hardware). The dev image
+# overrides these through /etc/default/eezybot-arm - see the
+# configure_eezybot_arm postprocess in eezybot-image-dev.bb.
+Environment=EEZYBOT_ARM_LAUNCH=production.launch.py
+Environment=EEZYBOT_ARM_USE_RVIZ=0
+Environment=EEZYBOT_ARM_ARGS=
+EnvironmentFile=-/etc/default/eezybot-arm
+# production.launch.py ignores the (undeclared) use_rviz argument; dev.launch.py
+# uses it to toggle RViz.
+ExecStart=/bin/sh -c '. /opt/ros/jazzy/setup.sh && exec ros2 launch eezybotarm_moveit_config "$EEZYBOT_ARM_LAUNCH" use_rviz:="$EEZYBOT_ARM_USE_RVIZ" $EEZYBOT_ARM_ARGS'
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

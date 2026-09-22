@@ -1,0 +1,68 @@
+header:
+  version: 14
+
+distro: eezybot
+# jetson-orin-nano-devkit-nvme: rootfs on the M.2 NVMe drive.
+# Use `jetson-orin-nano-devkit` instead if you want to boot from a microSD card.
+machine: jetson-orin-nano-devkit-nvme
+
+repos:
+  bitbake:
+    url: "https://github.com/openembedded/bitbake"
+    tag: "yocto-6.0.3"
+    layers: {}
+
+  openembedded-core:
+    url: "https://github.com/openembedded/openembedded-core"
+    branch: "wrynose"
+    layers:
+      meta:
+
+  meta-openembedded:
+    url: "https://git.openembedded.org/meta-openembedded"
+    branch: "wrynose"
+    layers:
+      meta-oe:
+      meta-python:
+      meta-networking:
+
+  meta-tegra:
+    url: "https://github.com/OE4T/meta-tegra"
+    branch: "wrynose"
+
+  meta-ros:
+    url: "https://github.com/ros/meta-ros"
+    branch: "wrynose"
+    layers:
+      meta-ros-common:
+      meta-ros2:
+      meta-ros2-jazzy:
+
+  meta-eezybot:
+    path: "meta-eezybot"
+
+bblayers_conf_header:
+  standard: |
+    POKY_BBLAYERS_CONF_VERSION = "2"
+    BBPATH = "${TOPDIR}"
+    BBFILES ?= ""
+
+# base.yml is the common configuration; it deliberately sets no `target`, so
+# base.yml on its own is not buildable. Pick an image with an overlay file,
+# e.g.:  kas-container build kas/base.yml:kas/production.yml
+local_conf_header:
+  standard: |
+    CONF_VERSION = "2"
+    ROS_DISTRO = "jazzy"
+    ACCEPT_FSL_EULA = "1"
+    NVIDIA_DEV_LICENSE = "1"
+
+    # The EezyBotArm sources come from the private vitaliimos/eeazybot_ros repo
+    # fetched over SSH. bitbake's fetch task runs with a temporary HOME, so
+    # host-key verification is relaxed to accept-new. The key itself comes from
+    # the ssh-agent forwarded via `kas-container --ssh-agent` (or the deploy key
+    # directory with `--ssh-dir`).
+    export GIT_SSH_COMMAND = "ssh -o StrictHostKeyChecking=accept-new"
+
+    BB_NUMBER_THREADS ?= "4"
+    PARALLEL_MAKE ?= "-j 4"

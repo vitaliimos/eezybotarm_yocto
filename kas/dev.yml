@@ -1,0 +1,8 @@
+# EezyBot dev image: production + headless desktop reachable over VNC.
+#
+#   kas-container build kas/base.yml:kas/dev.yml
+
+header:
+  version: 14
+
+target: eezybot-image-dev

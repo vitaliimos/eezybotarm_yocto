@@ -1,0 +1,25 @@
+# kas-managed workspace: repos are checked out at build time
+/bitbake/
+/openembedded-core/
+/meta-openembedded/
+/meta-tegra/
+/meta-ros/
+/tegra-demo-distro/
+
+# generated build directory (kas regenerates build/conf)
+/build/
+
+# bitbake caches
+/downloads/
+/sstate-cache/
+
+/flash/
+
+# local editor / tooling state
+.zed/
+.kas_shell_history
+/bitbake-cookerdaemon.log
+
+# Local developer secrets (Wi-Fi, root password, SSH keys, etc.)
+/meta-eezybot/conf/credentials.inc
+/kas/*secrets*.yml

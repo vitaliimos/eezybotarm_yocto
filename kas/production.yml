@@ -1,0 +1,8 @@
+# EezyBot production image: minimal, ROS2 runtime + stub app.
+#
+#   kas-container build kas/base.yml:kas/production.yml
+
+header:
+  version: 14
+
+target: eezybot-image
