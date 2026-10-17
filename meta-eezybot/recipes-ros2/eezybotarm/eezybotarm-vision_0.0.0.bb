@@ -24,7 +24,7 @@ ROS_EXEC_DEPENDS = " \
     sensor-msgs \
     std-msgs \
     std-srvs \
-    usb-cam \
+    v4l2-camera \
     visualization-msgs \
 "
 
