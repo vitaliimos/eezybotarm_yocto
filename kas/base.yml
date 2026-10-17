@@ -66,3 +66,6 @@ local_conf_header:
 
     BB_NUMBER_THREADS ?= "4"
     PARALLEL_MAKE ?= "-j 4"
+
+    # Automatically remove workdir after recipe build to save disk space
+    INHERIT += "rm_work"

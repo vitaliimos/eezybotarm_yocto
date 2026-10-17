@@ -71,5 +71,9 @@ if [ -d "$SSH_DIR" ]; then
     KAS_ARGS+=(--ssh-dir "$SSH_DIR")
 fi
 
+if [ -n "${SSH_AUTH_SOCK:-}" ]; then
+    KAS_ARGS+=(--ssh-agent)
+fi
+
 cd "$SCRIPT_DIR"
 exec kas-container "${KAS_ARGS[@]}" "$CMD" "$CONFIG" "$@"
