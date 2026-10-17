@@ -1,14 +1,14 @@
 SUMMARY = "EezyBotArm ROS 2 boot service"
 DESCRIPTION = "Assembles the EezyBotArm runtime and starts it at boot via systemd \
-(eezybot-arm.service). Launches production.launch.py headless by default; the dev image \
-switches to dev.launch.py (RViz enabled) via /etc/default/eezybot-arm."
+(eezybotarm.service). Launches production.launch.py headless by default; the dev image \
+switches to dev.launch.py (RViz enabled) via /etc/default/eezybotarm."
 SECTION = "devel"
 
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
 SRC_URI = " \
-    file://eezybot-arm.service \
+    file://eezybotarm.service \
 "
 
 S = "${UNPACKDIR}"
@@ -25,6 +25,7 @@ RDEPENDS:${PN} = " \
     eezybotarm-hardware \
     eezybotarm-interfaces \
     eezybotarm-moveit-config \
+    eezybotarm-vision \
     joint-state-broadcaster \
     joint-trajectory-controller \
     moveit-configs-utils \
@@ -42,8 +43,8 @@ RDEPENDS:${PN} = " \
 
 do_install() {
     install -d ${D}${systemd_system_unitdir}
-    install -m 0644 ${S}/eezybot-arm.service ${D}${systemd_system_unitdir}/eezybot-arm.service
+    install -m 0644 ${S}/eezybotarm.service ${D}${systemd_system_unitdir}/eezybotarm.service
 }
 
-SYSTEMD_SERVICE:${PN} = "eezybot-arm.service"
+SYSTEMD_SERVICE:${PN} = "eezybotarm.service"
 SYSTEMD_AUTO_ENABLE:${PN} = "enable"

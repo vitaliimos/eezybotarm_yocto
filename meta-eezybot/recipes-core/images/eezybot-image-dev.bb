@@ -12,17 +12,17 @@ IMAGE_INSTALL += "packagegroup-eezybot-dev"
 # production apart from the launch file). RViz is NOT enabled on the target; the
 # developer runs RViz on their workstation against the robot's topics over DDS
 # (see packagegroup-eezybot-dev and README "Dev image: host-side RViz").
-python configure_eezybot_arm() {
+python configure_eezybotarm() {
     import os
 
     rootfs = d.getVar('IMAGE_ROOTFS')
     defaults = os.path.join(rootfs, 'etc', 'default')
     os.makedirs(defaults, exist_ok=True)
-    with open(os.path.join(defaults, 'eezybot-arm'), 'w') as f:
+    with open(os.path.join(defaults, 'eezybotarm'), 'w') as f:
         f.write('# Dev image: launch the dev.launch.py, headless (RViz runs on\n'
                 '# the developer workstation, not on the target).\n'
-                'EEZYBOT_ARM_LAUNCH=dev.launch.py\n'
-                'EEZYBOT_ARM_USE_RVIZ=0\n')
+                'EEZYBOTARM_LAUNCH=dev.launch.py\n'
+                'EEZYBOTARM_USE_RVIZ=0\n')
 }
 
-ROOTFS_POSTPROCESS_COMMAND += "configure_eezybot_arm;"
+ROOTFS_POSTPROCESS_COMMAND += "configure_eezybotarm;"

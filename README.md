@@ -73,7 +73,7 @@ stock `wpa_supplicant@wlan0.service` instance and the image postprocess bakes
 ### EezyBotArm application
 
 Every image auto-starts the EezyBotArm ROS 2 stack at boot
-(`eezybot-arm.service`): `ros2_control` drives the PCA9685 hardware interface
+(`eezybotarm.service`): `ros2_control` drives the PCA9685 hardware interface
 (real hardware, `/dev/i2c-1`/`0x40` by default), `move_group` provides MoveIt 2
 planning (OMPL), and the `pick_and_place_server` action server accepts pick-place
 requests. The service sources the Jazzy environment and launches one of the MoveIt
@@ -87,15 +87,15 @@ config launch files:
 RViz 2 is deliberately not built for the target (Qt5 + OGRE vendor is a
 multi-hour build with unproven llvmpipe rendering on the Orin's Xvfb), so the
 dev image — like production — runs the stack headless via
-`/etc/default/eezybot-arm`, which the image bakes at build time and can be
+`/etc/default/eezybotarm`, which the image bakes at build time and can be
 edited on the device to override at runtime (e.g.
-`EEZYBOT_ARM_LAUNCH=production.launch.py`, or extra args such as
-`EEZYBOT_ARM_ARGS="i2c_bus:=/dev/i2c-2"`).
+`EEZYBOTARM_LAUNCH=production.launch.py`, or extra args such as
+`EEZYBOTARM_ARGS="i2c_bus:=/dev/i2c-2"`).
 
 ```sh
 # on the device
-systemctl status eezybot-arm
-journalctl -u eezybot-arm -f
+systemctl status eezybotarm
+journalctl -u eezybotarm -f
 
 # interact with the stack
 source /opt/ros/jazzy/setup.bash

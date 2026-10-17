@@ -1,11 +1,13 @@
 SUMMARY = "EezyBot core runtime: ROS 2 (Jazzy) + EezyBotArm service + networking"
 DESCRIPTION = "Packagegroup shared by all EezyBot images. Installs the ROS 2 (Jazzy) \
 runtime and the EezyBotArm application (built from the private eeazybot_ros Git \
-repository) which is auto-started at boot via its eezybot-arm.service unit. Also \
+repository) which is auto-started at boot via its eezybotarm.service unit. Also \
 installs the Jetson Orin Nano devkit NIC drivers (Realtek RTL8168 Ethernet, Realtek \
 RTL8822CE Wi-Fi) that are otherwise only weakly recommended by meta-tegra and can be \
 silently dropped from the rootfs."
 LICENSE = "MIT"
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 inherit packagegroup
 
@@ -24,3 +26,27 @@ RDEPENDS:${PN} += " \
     nv-kernel-module-rtl8822ce \
     tegra-firmware-rtl8822 \
 "
+
+# TensorRT, CUDA runtime, Tegra GPU initialization and cube detection model deployment
+RDEPENDS:${PN} += " \
+    nvidia-kernel-oot-display \
+    nvidia-kernel-oot-compute-nvgpu \
+    tegra-configs-udev \
+    tegra-configs-display-driver \
+    tegra-configs-sysctl \
+    tegra-nvsciipc \
+    tegra-nvfancontrol \
+    tegra-libraries-cuda \
+    cuda-cudart \
+    tensorrt-core \
+    python3-tensorrt \
+    cube-detection-model \
+"
+
+# USB camera support: UVC kernel driver, V4L2 diagnostic tools, and OpenCV
+RDEPENDS:${PN} += " \
+    kernel-module-uvcvideo \
+    v4l-utils \
+    python3-opencv \
+"
+

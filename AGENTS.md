@@ -33,8 +33,10 @@ This repository contains the Yocto/OpenEmbedded project for building an embedded
 * **`meta-eezybot/`**: Custom project layer.
   * **`recipes-ros2/eezybotarm/`**: Recipes packaging the ROS 2 workspace:
     * `eezybotarm-app.inc`: Defines git repository URL and commit revision (`EEZYBOT_ROS_APP_GIT_REV`).
-    * `eezybotarm-bringup`: Systemd unit and launch scripts for automated startup.
-    * `eezybotarm-control`, `eezybotarm-description`, `eezybotarm-hardware`, `eezybotarm-interfaces`, `eezybotarm-moveit-config`.
+    * `eezybotarm-bringup`: Systemd unit (`eezybotarm.service`) and launch scripts for automated startup.
+    * `eezybotarm-control`, `eezybotarm-description`, `eezybotarm-hardware`, `eezybotarm-interfaces`, `eezybotarm-moveit-config`, `eezybotarm-vision`.
+  * **`recipes-model/`**:
+    * `cube-detection-model`: TensorRT FP16 model engine for cube detection.
   * **`recipes-core/images/`**: `eezybot-image.bb` (production) and `eezybot-image-dev.bb` (dev tooling).
   * **`recipes-bbappends/`**: Kernel and package append configurations (e.g., `linux-noble-nvidia-tegra`, `moveit-py`).
   * **`conf/credentials.inc`**: WiFi SSIDs and SSH public keys (gitignored).

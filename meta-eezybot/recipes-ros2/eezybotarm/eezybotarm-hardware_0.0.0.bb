@@ -1,6 +1,6 @@
 SUMMARY = "EezyBotArm ros2_control hardware interface (PCA9685 I2C)"
 DESCRIPTION = "ros2_control SystemInterface hardware plugin driving the PCA9685 servo \
-controller over I2C (/dev/i2c-1, address 0x40) for the EezyBotArm."
+controller over I2C (/dev/i2c-7, address 0x60) for the EezyBotArm."
 HOMEPAGE = "https://github.com/vitaliimos/eeazybot_ros"
 SECTION = "devel"
 

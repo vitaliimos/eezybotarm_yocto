@@ -23,6 +23,7 @@ ROS_BUILDTOOL_DEPENDS = " \
 # RViz/visualization stack is pulled in by the dev packagegroup only.
 ROS_EXEC_DEPENDS = " \
     controller-manager \
+    eezybotarm-vision \
     moveit-configs-utils \
     robot-state-publisher \
     tf2-ros \

@@ -4,6 +4,8 @@ tooling (pip, venv), text editors (nano, vim), hardware debugging (i2c-tools), \
 Wi-Fi networking, and system diagnostic tools."
 LICENSE = "MIT"
 
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+
 inherit packagegroup
 
 # Wi-Fi client support and tools (autoconfiguration is baked into the image:
@@ -38,4 +40,9 @@ RDEPENDS:${PN} += " \
     tcpdump \
     sudo \
     v4l-utils \
+"
+
+# TensorRT CLI builder for compiling .engine models over SSH
+RDEPENDS:${PN} += " \
+    tensorrt-trtexec \
 "

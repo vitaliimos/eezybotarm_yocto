@@ -14,6 +14,7 @@
 /sstate-cache/
 
 /flash/
+__pycache__/
 
 # local editor / tooling state
 .zed/
