@@ -12,11 +12,14 @@ Environment=EEZYBOTARM_LAUNCH=production.launch.py
 Environment=EEZYBOTARM_USE_RVIZ=0
 Environment=EEZYBOTARM_ARGS=
 EnvironmentFile=-/etc/default/eezybotarm
+# Ensure TensorRT engine exists when starting production launch
+ExecStartPre=-/usr/bin/eezybotarm-ensure-engine.sh
 # production.launch.py ignores the (undeclared) use_rviz argument; dev.launch.py
 # uses it to toggle RViz.
 ExecStart=/bin/sh -c '. /opt/ros/jazzy/setup.sh && exec ros2 launch eezybotarm_moveit_config "$EEZYBOTARM_LAUNCH" use_rviz:="$EEZYBOTARM_USE_RVIZ" $EEZYBOTARM_ARGS'
 Restart=on-failure
 RestartSec=10
+TimeoutStartSec=600
 
 [Install]
 WantedBy=multi-user.target

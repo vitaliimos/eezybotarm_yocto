@@ -39,6 +39,7 @@ RDEPENDS:${PN} += " \
     tegra-libraries-cuda \
     cuda-cudart \
     tensorrt-core \
+    tensorrt-trtexec \
     python3-tensorrt \
     cube-detection-model \
 "
@@ -48,5 +49,11 @@ RDEPENDS:${PN} += " \
     kernel-module-uvcvideo \
     v4l-utils \
     python3-opencv \
+"
+
+# USB Device Mode (Ethernet gadget over USB Type-C) & compressed image transport
+RDEPENDS:${PN} += " \
+    l4t-usb-device-mode \
+    compressed-image-transport \
 "
 

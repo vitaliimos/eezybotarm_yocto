@@ -1,32 +1,28 @@
-SUMMARY = "Pre-compiled TensorRT engine for EezyBotArm cube detection"
-DESCRIPTION = "Installs the pre-compiled TensorRT FP16 engine (model.engine) \
-into /usr/share/models/ for the EezyBotArm cube detection vision node."
+SUMMARY = "Pre-trained YOLO cube detection ONNX model"
+DESCRIPTION = "Installs model.onnx into /usr/share/models/ for the EezyBotArm cube detection vision node."
 
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
-SRC_URI = "${@'file://model.engine' if os.path.isfile(os.path.join(d.getVar('THISDIR'), 'files', 'model.engine')) else ''}"
+SRC_URI = "${@'file://model.onnx' if os.path.isfile(os.path.join(d.getVar('THISDIR'), 'files', 'model.onnx')) else ''}"
 
 S = "${UNPACKDIR}"
 
-# Binary TensorRT engine plan is architecture-specific and pre-compiled on target GPU
-INSANE_SKIP:${PN} = "already-stripped arch"
+inherit allarch
 ALLOW_EMPTY:${PN} = "1"
 
-python do_warn_missing_engine() {
+python do_warn_missing_model() {
     import os
-    engine_path = os.path.join(d.getVar('THISDIR'), 'files', 'model.engine')
-    if not os.path.isfile(engine_path):
-        bb.warn("model.engine not found in meta-eezybot/recipes-model/cube-detection-model/files/. "
-                "Boot the dev image on Jetson and run: "
-                "python3 scripts/prepare_yolo_model.py --model <weights.pt> --jetson root@<ip>")
+    model_path = os.path.join(d.getVar('THISDIR'), 'files', 'model.onnx')
+    if not os.path.isfile(model_path):
+        bb.warn("model.onnx not found in meta-eezybot/recipes-model/cube-detection-model/files/.")
 }
-addtask warn_missing_engine before do_install
+addtask warn_missing_model before do_install
 
 do_install() {
     install -d ${D}/usr/share/models
-    if [ -f "${UNPACKDIR}/model.engine" ]; then
-        install -m 0644 ${UNPACKDIR}/model.engine ${D}/usr/share/models/model.engine
+    if [ -f "${UNPACKDIR}/model.onnx" ]; then
+        install -m 0644 ${UNPACKDIR}/model.onnx ${D}/usr/share/models/model.onnx
     fi
 }
 

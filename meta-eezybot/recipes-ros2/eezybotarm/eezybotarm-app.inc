@@ -1,7 +1,7 @@
 # Build-time source definition for the EezyBotArm ROS 2 packages.
 
 EEZYBOT_ROS_APP_GIT_URI ?= "git://git@github.com/vitaliimos/eeazybot_ros.git;protocol=ssh;branch=main;lfs=1"
-EEZYBOT_ROS_APP_GIT_REV ?= "f3795f5d7c7ad43da08d2de9a35ac4fbfcd4b103"
+EEZYBOT_ROS_APP_GIT_REV ?= "31b32128fec38b9d709f7e748248654a267ba268"
 
 EEZYBOT_ROS_APP_PKG ?= "${ROS_BPN}"
 

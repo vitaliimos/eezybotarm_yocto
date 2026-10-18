@@ -9,6 +9,7 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 SRC_URI = " \
     file://eezybotarm.service \
+    file://eezybotarm-ensure-engine.sh \
 "
 
 S = "${UNPACKDIR}"
@@ -44,6 +45,9 @@ RDEPENDS:${PN} = " \
 do_install() {
     install -d ${D}${systemd_system_unitdir}
     install -m 0644 ${S}/eezybotarm.service ${D}${systemd_system_unitdir}/eezybotarm.service
+
+    install -d ${D}${bindir}
+    install -m 0755 ${S}/eezybotarm-ensure-engine.sh ${D}${bindir}/eezybotarm-ensure-engine.sh
 }
 
 SYSTEMD_SERVICE:${PN} = "eezybotarm.service"

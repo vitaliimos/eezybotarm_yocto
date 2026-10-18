@@ -1,22 +1,32 @@
 # Model Assets Directory
 
-This directory holds the pre-compiled TensorRT engine (`model.engine`, tracked via Git LFS) packaged into `/usr/share/models/model.engine` on the Yocto image.
+This directory holds the pre-trained YOLO cube detection ONNX model (`model.onnx`, tracked via Git LFS) packaged into `/usr/share/models/model.onnx` on the Yocto image.
 
-## Generating / Updating `model.engine`
+---
 
-Because TensorRT `.engine` plans are specific to the target GPU architecture (Jetson Orin Nano `tegra234`) and exact TensorRT/CUDA version, compilation is performed over SSH on a Jetson running `eezybot-image-dev` (which includes `trtexec`):
+## How Models Are Used Across Distros
 
+### 1. Dev Distro (`eezybot-image-dev`)
+- Uses `model.onnx` directly via **ONNX Runtime** (`python3-onnxruntime`).
+- Launched by `dev.launch.py`, avoiding delays for TensorRT engine compilation during development and testing.
+
+### 2. Production Distro (`eezybot-image`)
+- Automatically compiles `/usr/share/models/model.onnx` into `/usr/share/models/model.engine` on the Jetson Orin Nano GPU using `trtexec --fp16` during the first boot.
+- Handled automatically via `ExecStartPre=/usr/bin/eezybotarm-ensure-engine.sh` in `eezybotarm.service`.
+- Once compiled, subsequent boots and restarts immediately use the generated `model.engine` with TensorRT hardware acceleration in `production.launch.py`.
+
+---
+
+## Updating `model.onnx`
+
+When new weights (`weights.pt`) are trained copy from ROS 2 package
 ```bash
-# On your PC/workstation (with PyTorch and Ultralytics installed):
-python3 scripts/prepare_yolo_model.py \
-    --model ../eeazybot/src/eezybotarm_vision/models/weights.pt \
-    --jetson root@<jetson-ip>
+cp ../eeazybot/src/eezybotarm_vision/models/model.onnx meta-eezybot/recipes-model/cube-detection-model/files/model.onnx
 ```
 
-What this script does:
-1. Exports the trained `.pt` model to a temporary `.onnx` file on your PC.
-2. Uploads the temporary `.onnx` to `/tmp/` on the Jetson over SCP.
-3. Runs `trtexec --fp16` on the Jetson to produce `/usr/share/models/model.engine` and removes the temporary `.onnx`.
-4. Downloads the compiled `model.engine` into `meta-eezybot/recipes-model/cube-detection-model/files/model.engine`.
-
-After generating a new `model.engine`, commit it via Git LFS and rebuild the Yocto image (`./build.sh prod` or `./build.sh dev`).
+### Commit via Git LFS:
+```bash
+git add meta-eezybot/recipes-model/cube-detection-model/files/model.onnx
+git commit -m "model: update cube detection ONNX model"
+```
+Rebuild the target image using `./build.sh dev` or `./build.sh prod`.

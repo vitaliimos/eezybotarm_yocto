@@ -46,3 +46,8 @@ RDEPENDS:${PN} += " \
 RDEPENDS:${PN} += " \
     tensorrt-trtexec \
 "
+
+# ONNX runtime for dev image
+RDEPENDS:${PN} += " \
+    python3-onnxruntime \
+"
