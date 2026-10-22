@@ -14,12 +14,15 @@ ROS_BPN = "eezybotarm_vision"
 ROS_BUILD_TYPE = "ament_python"
 
 ROS_EXEC_DEPENDS = " \
+    cuda-cudart \
     cv-bridge \
     eezybotarm-interfaces \
     geometry-msgs \
     image-publisher \
     python3-numpy \
+    python3-onnxruntime \
     python3-opencv \
+    python3-tensorrt \
     rclpy \
     sensor-msgs \
     std-msgs \
@@ -31,8 +34,6 @@ ROS_EXEC_DEPENDS = " \
 RDEPENDS:${PN} += " \
     python3 \
     ${ROS_EXEC_DEPENDS} \
-    python3-tensorrt \
-    cuda-cudart \
     cube-detection-model \
 "
 

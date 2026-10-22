@@ -1,7 +1,7 @@
 SUMMARY = "EezyBotArm MoveIt 2 configuration and launch files"
 DESCRIPTION = "MoveIt 2 (MoveIt Setup Assistant generated) configuration and launch files for \
 the EezyBotArm: URDF/srdf, kinematics, controllers, OMPL planning pipeline, RViz config and \
-the bringup/production/dev launch files."
+the bringup/jetson/local launch files."
 HOMEPAGE = "https://github.com/vitaliimos/eeazybot_ros"
 SECTION = "devel"
 

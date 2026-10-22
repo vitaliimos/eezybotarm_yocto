@@ -8,10 +8,8 @@ require eezybot-image.bb
 # Pull in dev packages (python, editors, i2c-tools, debugging tools)
 IMAGE_INSTALL += "packagegroup-eezybot-dev"
 
-# Dev image boots the dev.launch.py launch headless (same service defaults as
-# production apart from the launch file). RViz is NOT enabled on the target; the
-# developer runs RViz on their workstation against the robot's topics over DDS
-# (see packagegroup-eezybot-dev and README "Dev image: host-side RViz").
+# Dev image boots jetson.launch.py with profile=dev (ONNX runtime model) via
+# /etc/default/eezybotarm.
 python configure_eezybotarm() {
     import os
 
@@ -19,10 +17,8 @@ python configure_eezybotarm() {
     defaults = os.path.join(rootfs, 'etc', 'default')
     os.makedirs(defaults, exist_ok=True)
     with open(os.path.join(defaults, 'eezybotarm'), 'w') as f:
-        f.write('# Dev image: launch the dev.launch.py, headless (RViz runs on\n'
-                '# the developer workstation, not on the target).\n'
-                'EEZYBOTARM_LAUNCH=dev.launch.py\n'
-                'EEZYBOTARM_USE_RVIZ=0\n')
+        f.write('# Dev image: run jetson.launch.py with dev profile (uses model.onnx).\n'
+                'EEZYBOTARM_PROFILE=dev\n')
 }
 
 ROOTFS_POSTPROCESS_COMMAND += "configure_eezybotarm;"

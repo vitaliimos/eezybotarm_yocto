@@ -1,0 +1,15 @@
+[Unit]
+Description=EezyBotArm NiceGUI Web Dashboard
+After=network.target eezybotarm.service
+Wants=eezybotarm.service
+
+[Service]
+Type=simple
+Environment=HOME=/root
+Environment=ROS_HOME=/root/.ros
+ExecStart=/bin/sh -c '. /opt/ros/jazzy/setup.sh && exec ros2 launch eezybotarm_dashboard dashboard.launch.py'
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

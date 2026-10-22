@@ -79,17 +79,15 @@ planning (OMPL), and the `pick_and_place_server` action server accepts pick-plac
 requests. The service sources the Jazzy environment and launches one of the MoveIt
 config launch files:
 
-| Image      | Launch file          | RViz |
-|------------|----------------------|------|
-| production | `production.launch.py` | off  |
-| dev        | `dev.launch.py`       | host-side only |
+| Image      | Launch file          | Profile | Dashboard (`eezybot-dashboard.service`) |
+|------------|----------------------|---------|-----------------------------------------|
+| production | `jetson.launch.py`   | `prod`  | off                                     |
+| dev        | `jetson.launch.py`   | `dev`   | enabled (port 8080)                     |
 
-RViz 2 is deliberately not built for the target (Qt5 + OGRE vendor is a
-multi-hour build with unproven llvmpipe rendering on the Orin's Xvfb), so the
-dev image — like production — runs the stack headless via
-`/etc/default/eezybotarm`, which the image bakes at build time and can be
-edited on the device to override at runtime (e.g.
-`EEZYBOTARM_LAUNCH=production.launch.py`, or extra args such as
+RViz 2 is deliberately not built for the target, so both images run
+`jetson.launch.py` headless via `/etc/default/eezybotarm`, which the dev image
+bakes at build time (`EEZYBOTARM_PROFILE=dev`) and can be edited on the device
+to override at runtime (e.g. `EEZYBOTARM_PROFILE=prod`, or extra args such as
 `EEZYBOTARM_ARGS="i2c_bus:=/dev/i2c-2"`).
 
 ```sh

@@ -8,12 +8,12 @@ This directory holds the pre-trained YOLO cube detection ONNX model (`model.onnx
 
 ### 1. Dev Distro (`eezybot-image-dev`)
 - Uses `model.onnx` directly via **ONNX Runtime** (`python3-onnxruntime`).
-- Launched by `dev.launch.py`, avoiding delays for TensorRT engine compilation during development and testing.
+- Launched by `jetson.launch.py` with `profile:=dev`, avoiding delays for TensorRT engine compilation during development and testing.
 
 ### 2. Production Distro (`eezybot-image`)
 - Automatically compiles `/usr/share/models/model.onnx` into `/usr/share/models/model.engine` on the Jetson Orin Nano GPU using `trtexec --fp16` during the first boot.
 - Handled automatically via `ExecStartPre=/usr/bin/eezybotarm-ensure-engine.sh` in `eezybotarm.service`.
-- Once compiled, subsequent boots and restarts immediately use the generated `model.engine` with TensorRT hardware acceleration in `production.launch.py`.
+- Once compiled, subsequent boots and restarts immediately use the generated `model.engine` with TensorRT hardware acceleration in `jetson.launch.py` (`profile:=prod`).
 
 ---
 

@@ -51,3 +51,9 @@ RDEPENDS:${PN} += " \
 RDEPENDS:${PN} += " \
     python3-onnxruntime \
 "
+
+# Web Dashboard for dev image
+RDEPENDS:${PN} += " \
+    eezybotarm-dashboard \
+    python3-nicegui \
+"
