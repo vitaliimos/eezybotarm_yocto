@@ -18,6 +18,7 @@ ROS_BUILD_TYPE = "ament_python"
 
 ROS_EXEC_DEPENDS = " \
     cv-bridge \
+    eezybotarm-description \
     eezybotarm-interfaces \
     geometry-msgs \
     python3-nicegui \

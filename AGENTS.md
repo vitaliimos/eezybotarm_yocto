@@ -34,12 +34,13 @@ This repository contains the Yocto/OpenEmbedded project for building an embedded
   * **`recipes-ros2/eezybotarm/`**: Recipes packaging the ROS 2 workspace:
     * `eezybotarm-app.inc`: Defines git repository URL and commit revision (`EEZYBOT_ROS_APP_GIT_REV`).
     * `eezybotarm-bringup`: Systemd unit (`eezybotarm.service`) and launch scripts for automated startup.
-    * `eezybotarm-control`, `eezybotarm-description`, `eezybotarm-hardware`, `eezybotarm-interfaces`, `eezybotarm-moveit-config`, `eezybotarm-vision`.
+    * `eezybotarm-control`, `eezybotarm-dashboard`, `eezybotarm-description`, `eezybotarm-hardware`, `eezybotarm-interfaces`, `eezybotarm-moveit-config`, `eezybotarm-vision`.
   * **`recipes-model/`**:
-    * `cube-detection-model`: TensorRT FP16 model engine for cube detection.
+    * `cube-detection-model`: TensorRT FP16 / ONNX model for cube detection.
   * **`recipes-core/images/`**: `eezybot-image.bb` (production) and `eezybot-image-dev.bb` (dev tooling).
-  * **`recipes-bbappends/`**: Kernel and package append configurations (e.g., `linux-noble-nvidia-tegra`, `moveit-py`).
+  * **`recipes-bbappends/linux/`**: Kernel configuration fragment (`linux-noble-nvidia-tegra`).
   * **`conf/credentials.inc`**: WiFi SSIDs and SSH public keys (gitignored).
+* **`meta-ros-tegra-fixes/`**: Upstream integration fixes and workarounds for `meta-ros` and `meta-tegra` (`cv-bridge`, `moveit-py`, `v4l2-camera`).
 
 ## Relationship with ROS 2 Workspace (`../eeazybot`)
 * ROS 2 development is done in `../eeazybot`.
