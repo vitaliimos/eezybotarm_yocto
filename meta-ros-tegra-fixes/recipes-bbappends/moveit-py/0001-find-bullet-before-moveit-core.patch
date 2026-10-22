@@ -1,0 +1,31 @@
+Find Bullet before moveit_core.
+
+moveit_py's CMakeLists finds moveit_ros_planning first. ament's flattened
+dependency list for moveit_ros_planning does not contain Bullet, so
+find_package(moveit_ros_planning) recurses into moveit_core, whose generated
+Config.cmake includes ament_cmake_export_targets-extras.cmake *before*
+ament_cmake_export_dependencies-extras.cmake. The imported target
+moveit_core::moveit_collision_detection_bullet is therefore declared before
+Bullet has been found, while its INTERFACE_LINK_LIBRARIES already names
+Bullet::BulletCollision. CMake then aborts with:
+
+  The link interface of target "moveit_core::moveit_collision_detection_bullet"
+  contains: Bullet::BulletCollision
+  but the target was not found.
+
+moveit_kinematics already works around this by finding Bullet up front; do the
+same here.
+
+Upstream-Status: Pending
+
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,6 +1,8 @@
+ cmake_minimum_required(VERSION 3.5)
+ project(moveit_py)
+
++find_package(Bullet CONFIG REQUIRED)
++
+ find_package(ament_cmake REQUIRED)
+ find_package(rclcpp REQUIRED)
+ find_package(rclpy REQUIRED)
