@@ -23,6 +23,7 @@ RDEPENDS:${PN} = " \
     python3-fastapi \
     python3-httpx \
     python3-ifaddr \
+    python3-itsdangerous \
     python3-jinja2 \
     python3-markdown2 \
     python3-pydantic \
@@ -34,5 +35,6 @@ RDEPENDS:${PN} = " \
     python3-typing-extensions \
     python3-uvicorn \
     python3-vbuild \
+    python3-webencodings \
     python3-websockets \
 "
