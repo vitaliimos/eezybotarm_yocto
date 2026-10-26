@@ -17,7 +17,7 @@ ExecStartPre=-/usr/bin/eezybotarm-ensure-engine.sh
 ExecStart=/bin/sh -c '. /opt/ros/jazzy/setup.sh && exec ros2 launch eezybotarm_moveit_config "$EEZYBOTARM_LAUNCH" profile:="$EEZYBOTARM_PROFILE" $EEZYBOTARM_ARGS'
 Restart=on-failure
 RestartSec=10
-TimeoutStartSec=600
+TimeoutStartSec=1800
 
 [Install]
 WantedBy=multi-user.target

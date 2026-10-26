@@ -24,3 +24,6 @@ __pycache__/
 # Local developer secrets (Wi-Fi, root password, SSH keys, etc.)
 /meta-eezybot/conf/credentials.inc
 /kas/*secrets*.yml
+
+# Pre-compiled TensorRT engine artifacts (device/version specific)
+/meta-eezybot/recipes-model/cube-detection-model/files/*.engine

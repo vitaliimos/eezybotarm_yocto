@@ -4,7 +4,10 @@ DESCRIPTION = "Installs model.onnx into /usr/share/models/ for the EezyBotArm cu
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
-SRC_URI = "${@'file://model.onnx' if os.path.isfile(os.path.join(d.getVar('THISDIR'), 'files', 'model.onnx')) else ''}"
+SRC_URI = " \
+    ${@'file://model.onnx' if os.path.isfile(os.path.join(d.getVar('THISDIR'), 'files', 'model.onnx')) else ''} \
+    ${@'file://model.engine' if os.path.isfile(os.path.join(d.getVar('THISDIR'), 'files', 'model.engine')) else ''} \
+"
 
 S = "${UNPACKDIR}"
 
@@ -23,6 +26,9 @@ do_install() {
     install -d ${D}/usr/share/models
     if [ -f "${UNPACKDIR}/model.onnx" ]; then
         install -m 0644 ${UNPACKDIR}/model.onnx ${D}/usr/share/models/model.onnx
+    fi
+    if [ -f "${UNPACKDIR}/model.engine" ]; then
+        install -m 0644 ${UNPACKDIR}/model.engine ${D}/usr/share/models/model.engine
     fi
 }
 

@@ -14,7 +14,7 @@ ROS_BPN = "eezybotarm_vision"
 ROS_BUILD_TYPE = "ament_python"
 
 ROS_EXEC_DEPENDS = " \
-    cuda-cudart \
+    python3-cuda-python \
     cv-bridge \
     eezybotarm-interfaces \
     geometry-msgs \
