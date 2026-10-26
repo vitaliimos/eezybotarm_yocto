@@ -20,6 +20,7 @@ ROS_EXEC_DEPENDS = " \
     cv-bridge \
     eezybotarm-description \
     eezybotarm-interfaces \
+    eezybotarm-vision \
     geometry-msgs \
     python3-nicegui \
     python3-numpy \
