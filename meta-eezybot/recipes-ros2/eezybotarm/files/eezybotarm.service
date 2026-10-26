@@ -4,17 +4,14 @@ After=network.target
 
 [Service]
 Type=simple
-# Defaults for the production image (headless, real hardware, TensorRT engine).
-# The dev image overrides EEZYBOTARM_PROFILE=dev through /etc/default/eezybotarm.
 Environment=HOME=/root
 Environment=ROS_HOME=/root/.ros
 Environment=EEZYBOTARM_LAUNCH=jetson.launch.py
-Environment=EEZYBOTARM_PROFILE=prod
 Environment=EEZYBOTARM_ARGS=
 EnvironmentFile=-/etc/default/eezybotarm
-# Ensure TensorRT engine exists when starting prod profile
+# Ensure TensorRT engine exists before starting
 ExecStartPre=-/usr/bin/eezybotarm-ensure-engine.sh
-ExecStart=/bin/sh -c '. /opt/ros/jazzy/setup.sh && exec ros2 launch eezybotarm_moveit_config "$EEZYBOTARM_LAUNCH" profile:="$EEZYBOTARM_PROFILE" $EEZYBOTARM_ARGS'
+ExecStart=/bin/sh -c '. /opt/ros/jazzy/setup.sh && exec ros2 launch eezybotarm_moveit_config "$EEZYBOTARM_LAUNCH" $EEZYBOTARM_ARGS'
 Restart=on-failure
 RestartSec=10
 TimeoutStartSec=1800

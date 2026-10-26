@@ -4,8 +4,9 @@
 set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "$(readlink -f "$0")")" && pwd)
-DEFAULT_MODEL_DIR="$SCRIPT_DIR/meta-eezybot/recipes-model/cube-detection-model/files"
-DEFAULT_ONNX="$DEFAULT_MODEL_DIR/model.onnx"
+DEFAULT_ENGINE_DIR="$SCRIPT_DIR/meta-eezybot/recipes-model/cube-detection-model/files"
+DEFAULT_ENGINE="$DEFAULT_ENGINE_DIR/model.engine"
+DEFAULT_ONNX="$SCRIPT_DIR/../eeazybot/src/eezybotarm_vision/models/model.onnx"
 
 target_host=""
 onnx_path=""
@@ -16,9 +17,13 @@ usage() {
     cat <<EOF
 Usage: $(basename "$0") [options] <[user@]jetson-host> [onnx-file] [output-engine]
 
-Upload an ONNX model to a running Jetson device, compile it into a TensorRT
-FP16 .engine in /usr/share/models/model.engine, and download the compiled
-engine back to the host PC.
+Compile an ONNX model into a TensorRT FP16 .engine in /usr/share/models/model.engine
+on a running Jetson device, and download the compiled engine back to the host PC
+for packaging into subsequent Yocto prod builds.
+
+If a local ONNX file is specified (or found at $DEFAULT_ONNX),
+it is uploaded to the Jetson first; otherwise the existing /usr/share/models/model.onnx
+on the Jetson is used.
 
 Temporarily stops eezybotarm.service on the Jetson during compilation to free
 GPU memory and prevent systemd start-pre conflicts, then starts it back.
@@ -26,9 +31,9 @@ GPU memory and prevent systemd start-pre conflicts, then starts it back.
 Arguments:
   [user@]jetson-host   Jetson IP or hostname (defaults to root@<host> if user omitted)
   onnx-file            Input .onnx file path
-                       (default: $DEFAULT_ONNX)
+                       (default: $DEFAULT_ONNX if present, else remote /usr/share/models/model.onnx)
   output-engine        Local destination path for compiled .engine
-                       (default: <onnx-dir>/<onnx-basename>.engine)
+                       (default: $DEFAULT_ENGINE)
 
 Options:
   -i, --onnx PATH      Input .onnx file path
@@ -95,19 +100,17 @@ case "$target_host" in
     *)   ssh_target="root@$target_host" ;;
 esac
 
-if [ -z "$onnx_path" ]; then
+if [ -n "$onnx_path" ]; then
+    if [ ! -f "$onnx_path" ]; then
+        echo "ERR: ONNX file not found: $onnx_path" >&2
+        exit 1
+    fi
+elif [ -f "$DEFAULT_ONNX" ]; then
     onnx_path="$DEFAULT_ONNX"
 fi
 
-if [ ! -f "$onnx_path" ]; then
-    echo "ERR: ONNX file not found: $onnx_path" >&2
-    exit 1
-fi
-
 if [ -z "$output_path" ]; then
-    onnx_dir=$(cd "$(dirname "$onnx_path")" && pwd)
-    onnx_base=$(basename "$onnx_path" .onnx)
-    output_path="$onnx_dir/${onnx_base}.engine"
+    output_path="$DEFAULT_ENGINE"
 fi
 
 mkdir -p "$(dirname "$(readlink -f -m "$output_path")")"
@@ -118,7 +121,11 @@ REMOTE_ENGINE="$REMOTE_DIR/model.engine"
 REMOTE_CACHE="$REMOTE_DIR/model.timing.cache"
 
 echo "== Target Jetson: $ssh_target =="
-echo "== Local ONNX:    $onnx_path =="
+if [ -n "$onnx_path" ]; then
+    echo "== Local ONNX:    $onnx_path =="
+else
+    echo "== Remote ONNX:   $ssh_target:$REMOTE_ONNX =="
+fi
 echo "== Local output:  $output_path =="
 
 cleanup_remote() {
@@ -132,8 +139,10 @@ trap cleanup_remote EXIT
 echo "== Stopping eezybotarm.service on $ssh_target to free GPU memory =="
 ssh "$ssh_target" "systemctl stop eezybotarm.service || true; mkdir -p '$REMOTE_DIR'"
 
-echo "== Uploading $(basename "$onnx_path") -> $ssh_target:$REMOTE_ONNX =="
-scp "$onnx_path" "$ssh_target:$REMOTE_ONNX"
+if [ -n "$onnx_path" ]; then
+    echo "== Uploading $(basename "$onnx_path") -> $ssh_target:$REMOTE_ONNX =="
+    scp "$onnx_path" "$ssh_target:$REMOTE_ONNX"
+fi
 
 echo "== Compiling TensorRT FP16 engine on $ssh_target (this may take 10-15 minutes on first run) =="
 ssh "$ssh_target" "set -e

@@ -1,7 +1,6 @@
 SUMMARY = "EezyBotArm ROS 2 boot service"
 DESCRIPTION = "Assembles the EezyBotArm runtime and starts it at boot via systemd \
-(eezybotarm.service). Launches jetson.launch.py with profile:=prod by default; the dev image \
-switches to profile:=dev via /etc/default/eezybotarm."
+(eezybotarm.service), launching jetson.launch.py."
 SECTION = "devel"
 
 LICENSE = "MIT"
