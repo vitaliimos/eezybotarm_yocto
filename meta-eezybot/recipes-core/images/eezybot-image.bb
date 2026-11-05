@@ -35,8 +35,6 @@ IMAGE_INSTALL += "packagegroup-eezybot-core"
 # to /root/.ssh/authorized_keys in the image postprocess, and OpenSSH's default
 # PermitRootLogin=prohibit-password is exactly what we want - no password ever
 # reaches /etc/shadow, so there is no extrausers machinery here.
-# EEZYBOT_ROOT_PASSWORD is consumed by the dev image only, which bakes it into
-# the VNC password file.
 include conf/credentials.inc
 
 EEZYBOT_ROOT_PASSWORD ?= ""

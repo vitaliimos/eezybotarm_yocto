@@ -49,7 +49,7 @@ All secrets live in `meta-eezybot/conf/credentials.inc` (gitignored; copy it fro
   in over the network. Separate multiple keys with `\n`.
 
 If the file is absent the build still succeeds, but the image has no SSH public
-key (no network login), no VNC password and no Wi-Fi config. For CI/production you can
+key (no network login) and no Wi-Fi config. For CI/production you can
 instead override the variables via a `kas/*secrets*.yml` `local_conf_header`
 or the `env:` mapping (see [Cache / reusability](#cache--reusability)).
 
@@ -68,7 +68,7 @@ stock `wpa_supplicant@wlan0.service` instance and the image postprocess bakes
 `/etc/wpa_supplicant/wpa_supplicant-wlan0.conf` and
 `/usr/lib/systemd/network/25-wireless.network` from `EEZYBOT_WIFI_SSID`
 /`EEZYBOT_WIFI_PASSWORD`. So a dev image on Wi-Fi shows up with two IPs
-(eth0 + wlan0); both serve SSH/VNC.
+(eth0 + wlan0); both serve SSH.
 
 ### EezyBotArm application
 
@@ -211,9 +211,8 @@ tar --zstd -xf build/tmp/deploy/images/jetson-orin-nano-devkit-nvme/eezybot-imag
 ./initrd-flash --external-only
 ```
 
-The device boots and is reachable as documented below (`ssh root@<device-ip>`
-and, on the dev image, VNC on port 5900). A serial console on the dev kit's
-button-header UART is helpful when debugging boot issues.
+The device boots and is reachable as documented below (`ssh root@<device-ip>`).
+A serial console on the dev kit's button-header UART is helpful when debugging boot issues.
 
 ## Output
 
@@ -240,7 +239,7 @@ delete `build/` and rebuild — kas regenerates the config every run.
 
 ```sh
 ./build.sh prod                                         # production image
-./build.sh dev                                          # dev image (VNC desktop)
+./build.sh dev                                          # dev image (tools & dashboard)
 ./build.sh shell                                        # interactive shell in build env
 kas-container dump kas/base.yml:kas/dev.yml               # show merged config
 kas lock kas/base.yml                                   # pin repos to commits
