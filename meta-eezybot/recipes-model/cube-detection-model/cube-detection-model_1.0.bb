@@ -14,7 +14,8 @@ SRC_URI += " \
     ${@'file://model.engine' if os.path.isfile(os.path.join(d.getVar('THISDIR'), 'files', 'model.engine')) else ''} \
 "
 
-inherit allarch
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+COMPATIBLE_MACHINE = "(tegra)"
 
 do_install() {
     install -d ${D}/usr/share/models
