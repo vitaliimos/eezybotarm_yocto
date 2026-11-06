@@ -8,18 +8,16 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 inherit packagegroup
 
-# Wi-Fi client support and tools (autoconfiguration is baked into the image:
-# wpa_supplicant@wlan0 via SYSTEMD_SERVICE, config/credentials written by the
-# image postprocess from credentials.inc).
+# Wi-Fi diagnostics and CLI inspection tools
 RDEPENDS:${PN} = " \
     iw \
-    wpa-supplicant \
-    wireless-regdb-static \
 "
 
 # Hardware debugging
 RDEPENDS:${PN} += " \
     i2c-tools \
+    usbutils \
+    tegra-tools-tegrastats \
 "
 
 # Python development tooling and editors
@@ -40,6 +38,12 @@ RDEPENDS:${PN} += " \
     tcpdump \
     sudo \
     v4l-utils \
+    htop \
+"
+
+# ROS 2 CLI debugging extensions
+RDEPENDS:${PN} += " \
+    ros2controlcli \
 "
 
 # TensorRT CLI builder for compiling .engine models over SSH

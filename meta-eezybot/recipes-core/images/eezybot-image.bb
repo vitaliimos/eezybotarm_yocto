@@ -23,11 +23,11 @@ IMAGE_FEATURES += "ssh-server-openssh"
 IMAGE_INSTALL = "packagegroup-core-boot"
 IMAGE_INSTALL += "packagegroup-eezybot-core"
 
-# WiFi on the dev image is enabled out-of-the-box: the stock
+# WiFi is enabled out-of-the-box when credentials are provided: the stock
 # wpa_supplicant@.service instance (see distro conf) reads
 # /etc/wpa_supplicant/wpa_supplicant-wlan0.conf and systemd-networkd gets DHCP
 # for wireless interfaces from /usr/lib/systemd/network/25-wireless.network.
-# Both files are baked below; the SSID/psk network block is added when
+# Both files are baked below; the SSID/network block is added when
 # EEZYBOT_WIFI_SSID/PASSWORD are provided.
 
 # Credentials come from the gitignored credentials.inc (or weak overrides such
@@ -37,7 +37,6 @@ IMAGE_INSTALL += "packagegroup-eezybot-core"
 # reaches /etc/shadow, so there is no extrausers machinery here.
 include conf/credentials.inc
 
-EEZYBOT_ROOT_PASSWORD ?= ""
 EEZYBOT_SSH_PUBLIC_KEYS ?= ""
 EEZYBOT_WIFI_SSID ?= ""
 EEZYBOT_WIFI_PASSWORD ?= ""
@@ -48,6 +47,7 @@ python warn_missing_ssh_keys() {
                 'way to log in over SSH. Create meta-eezybot/conf/credentials.inc '
                 'from credentials.inc.template.')
 }
+do_rootfs[prefuncs] += "warn_missing_ssh_keys"
 
 python configure_ssh_keys() {
     import os
@@ -82,11 +82,20 @@ python configure_wifi() {
         ssid = (d.getVar('EEZYBOT_WIFI_SSID', False) or '').strip()
         if ssid:
             psk = (d.getVar('EEZYBOT_WIFI_PASSWORD', False) or '').strip()
-            f.write('\n'
-                    'network={\n'
-                    '    ssid="%s"\n'
-                    '    psk="%s"\n'
-                    '}\n' % (ssid, psk))
+            ssid_esc = ssid.replace('\\', '\\\\').replace('"', '\\"')
+            if psk:
+                psk_esc = psk.replace('\\', '\\\\').replace('"', '\\"')
+                f.write('\n'
+                        'network={\n'
+                        '    ssid="%s"\n'
+                        '    psk="%s"\n'
+                        '}\n' % (ssid_esc, psk_esc))
+            else:
+                f.write('\n'
+                        'network={\n'
+                        '    ssid="%s"\n'
+                        '    key_mgmt=NONE\n'
+                        '}\n' % ssid_esc)
     os.chmod(wpa_conf, 0o600)
 
     net_dir = os.path.join(rootfs, 'usr', 'lib', 'systemd', 'network')

@@ -27,6 +27,14 @@ RDEPENDS:${PN} += " \
     tegra-firmware-rtl8822 \
 "
 
+# Wi-Fi client daemon and regulatory database. Combined with the Realtek
+# driver/firmware and wpa_supplicant@wlan0.service, this enables Wi-Fi out of the
+# box whenever EEZYBOT_WIFI_SSID is configured in credentials.inc.
+RDEPENDS:${PN} += " \
+    wpa-supplicant \
+    wireless-regdb-static \
+"
+
 # TensorRT, CUDA runtime, Tegra GPU initialization and cube detection model deployment
 RDEPENDS:${PN} += " \
     nvidia-kernel-oot-display \

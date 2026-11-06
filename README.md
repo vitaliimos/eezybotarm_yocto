@@ -6,7 +6,7 @@ Yocto/OpenEmbedded build for an NVIDIA Jetson device, configured with
 | Image                 | Type       | Contents                                                            |
 |-----------------------|------------|---------------------------------------------------------------------|
 | `eezybot-image`      | production | minimal console image: ROS 2 (Jazzy), EezyBotArm (auto-start, headless), SSH |
-| `eezybot-image-dev`  | development| production + dev tools (Python pip/venv, nano/vim, i2c-tools, gdb, Wi-Fi) |
+| `eezybot-image-dev`  | development| production + dev tools (Python pip/venv, nano/vim, i2c-tools, gdb, iw) |
 
 Both are built from the `eezybot` distro defined in the local `meta-eezybot/` layer
 on machine `jetson-orin-nano-devkit-nvme` (rootfs on the M.2 NVMe drive). To boot
@@ -42,7 +42,7 @@ All secrets live in `meta-eezybot/conf/credentials.inc` (gitignored; copy it fro
 `credentials.inc.template` and fill in the values):
 
 - `EEZYBOT_WIFI_SSID` / `EEZYBOT_WIFI_PASSWORD` — Wi-Fi network (enables
-  `wpa_supplicant@wlan0` on the dev image; see [Networking](#networking-ethernet--wi-fi))
+  `wpa_supplicant@wlan0`; see [Networking](#networking-ethernet--wi-fi))
 - `EEZYBOT_SSH_PUBLIC_KEYS` — SSH public key(s), installed to
   `/root/.ssh/authorized_keys`. SSH is **key-only** — OpenSSH's default
   `PermitRootLogin=prohibit-password` is kept, so this is the only way to log
@@ -62,13 +62,12 @@ ssh root@<device-ip>      # key-only; the public key must be in EEZYBOT_SSH_PUBL
 ### Networking (ethernet + Wi-Fi)
 
 `systemd-networkd` (oe-core) manages interfaces and provides DHCP. Ethernet
-("wired") uses the stock `80-wired.network`; on the dev image the Wi-Fi is
-provisioned out-of-the-box when credentials are set: the distro enables the
-stock `wpa_supplicant@wlan0.service` instance and the image postprocess bakes
-`/etc/wpa_supplicant/wpa_supplicant-wlan0.conf` and
-`/usr/lib/systemd/network/25-wireless.network` from `EEZYBOT_WIFI_SSID`
-/`EEZYBOT_WIFI_PASSWORD`. So a dev image on Wi-Fi shows up with two IPs
-(eth0 + wlan0); both serve SSH.
+("wired") uses the stock `80-wired.network`; Wi-Fi is provisioned out-of-the-box
+when credentials are set: the distro enables the stock `wpa_supplicant@wlan0.service`
+instance and the image postprocess bakes `/etc/wpa_supplicant/wpa_supplicant-wlan0.conf`
+and `/usr/lib/systemd/network/25-wireless.network` from `EEZYBOT_WIFI_SSID`
+/`EEZYBOT_WIFI_PASSWORD`. So a device on Wi-Fi shows up with two IPs
+(eth0 + wlan0); both serve SSH (the dev image additionally provides the `iw` CLI tool).
 
 ### EezyBotArm application
 
