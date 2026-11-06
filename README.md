@@ -74,21 +74,19 @@ stock `wpa_supplicant@wlan0.service` instance and the image postprocess bakes
 
 Every image auto-starts the EezyBotArm ROS 2 stack at boot
 (`eezybotarm.service`): `ros2_control` drives the PCA9685 hardware interface
-(real hardware, `/dev/i2c-1`/`0x40` by default), `move_group` provides MoveIt 2
-planning (OMPL), and the `pick_and_place_server` action server accepts pick-place
-requests. The service sources the Jazzy environment and launches one of the MoveIt
-config launch files:
+(real hardware, `/dev/i2c-7`/`0x60` by default), `pick_and_place_server` plans
+trajectories directly using MoveIt 2 (`MoveItPy` / OMPL), and the vision
+pipeline runs YOLO cube detection via TensorRT (`/usr/share/models/model.engine`).
+The service sources the Jazzy environment and launches `jetson.launch.py`:
 
-| Image      | Launch file          | Profile | Dashboard (`eezybot-dashboard.service`) |
-|------------|----------------------|---------|-----------------------------------------|
-| production | `jetson.launch.py`   | `prod`  | off                                     |
-| dev        | `jetson.launch.py`   | `dev`   | enabled (port 8080)                     |
+| Image      | Launch file          | Dashboard (`eezybot-dashboard.service`) |
+|------------|----------------------|-----------------------------------------|
+| production | `jetson.launch.py`   | off                                     |
+| dev        | `jetson.launch.py`   | enabled (port 8080)                     |
 
 RViz 2 is deliberately not built for the target, so both images run
-`jetson.launch.py` headless via `/etc/default/eezybotarm`, which the dev image
-bakes at build time (`EEZYBOTARM_PROFILE=dev`) and can be edited on the device
-to override at runtime (e.g. `EEZYBOTARM_PROFILE=prod`, or extra args such as
-`EEZYBOTARM_ARGS="i2c_bus:=/dev/i2c-2"`).
+`jetson.launch.py` headless. Launch parameters can be customized or overridden
+on the device via `/etc/default/eezybotarm` (e.g. `EEZYBOTARM_ARGS="i2c_bus:=/dev/i2c-1"`).
 
 ```sh
 # on the device
@@ -112,17 +110,18 @@ To visualize with RViz 2 without building it for the target, install ROS 2 Jazzy
 # on your workstation
 export ROS_DOMAIN_ID=42                          # must match the one on the robot
 source /opt/ros/jazzy/setup.bash
-DISPLAY=:0 ros2 launch eezybotarm_moveit_config dev.launch.py use_rviz:=true
+DISPLAY=:0 ros2 launch eezybotarm_moveit_config rviz.launch.py
 ```
 
-The launch (brought over from the same `eeazybot_ros` repo your host clones, or
-run through the robot) starts the MoveIt launch on the workstation while the
-robot's `move_group`/`ros2_control` nodes run on the target; Fast DDS discovery
+The workstation launch starts `move_group` and RViz 2 locally while the
+robot's `ros2_control` and `robot_state_publisher` run on the target; Fast DDS discovery
 links the two over the network, so RViz shows the live arm state
 (`/tf`, `/joint_states`, `/monitored_planning_scene`). No Qt/OGRE is built for
 the arm, and rendering uses your workstation's GPU.
 
-The five `eezybotarm_*` packages are built from the `vitaliimos/eeazybot_ros`
+The seven `eezybotarm_*` packages (`eezybotarm_interfaces`, `eezybotarm_description`,
+`eezybotarm_hardware`, `eezybotarm_moveit_config`, `eezybotarm_control`,
+`eezybotarm_vision`, `eezybotarm_dashboard`) are built from the `vitaliimos/eeazybot_ros`
 Git repository at build time; their URL/revision and recipe definitions live in
 `meta-eezybot/recipes-ros2/eezybotarm/`.
 
