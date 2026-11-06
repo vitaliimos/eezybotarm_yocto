@@ -10,7 +10,10 @@ inherit python3-dir
 
 do_install() {
     install -d ${D}${PYTHON_SITEPACKAGES_DIR}
-    cp -r ${S}/vbuild* ${D}${PYTHON_SITEPACKAGES_DIR}/
+    cp -R --no-preserve=ownership ${S}/vbuild* ${D}${PYTHON_SITEPACKAGES_DIR}/
+    chown -R root:root ${D}${PYTHON_SITEPACKAGES_DIR}
+    find ${D}${PYTHON_SITEPACKAGES_DIR} -type d -exec chmod 0755 {} +
+    find ${D}${PYTHON_SITEPACKAGES_DIR} -type f -exec chmod 0644 {} +
 }
 
 FILES:${PN} += "${PYTHON_SITEPACKAGES_DIR}"

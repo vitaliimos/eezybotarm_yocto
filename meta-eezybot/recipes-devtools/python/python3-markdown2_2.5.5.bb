@@ -1,20 +1,19 @@
 SUMMARY = "A fast and complete Python implementation of Markdown"
 HOMEPAGE = "https://github.com/trentm/python-markdown2"
 LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
+LIC_FILES_CHKSUM = "file://LICENSE.txt;md5=0ad015e3507344d0963fc15585661b1b"
 
-SRC_URI = "https://files.pythonhosted.org/packages/43/af/4b3891eb0a49d6cfd5cbf3e9bf514c943afc2b0f13e2c57cc57cd88ecc21/markdown2-2.5.5-py3-none-any.whl;downloadfilename=markdown2-${PV}-py3-none-any.zip;subdir=${BP}"
-SRC_URI[sha256sum] = "be798587e09d1f52d2e4d96a649c4b82a778c75f9929aad52a2c95747fa26941"
+SRC_URI[sha256sum] = "001547e68f6e7fcf0f1cb83f7e82f48aa7d48b2c6a321f0cd20a853a8a2d1664"
 
-inherit python3-dir
+inherit pypi setuptools3
 
-do_install() {
-    install -d ${D}${PYTHON_SITEPACKAGES_DIR}
-    cp -r ${S}/markdown2* ${D}${PYTHON_SITEPACKAGES_DIR}/
+PYPI_PACKAGE = "markdown2"
+
+do_install:append() {
+    # setup.py packages testing/tox.ini into ${prefix}/testing, which is unwanted in the rootfs
+    rm -rf ${D}${prefix}/testing
 }
 
-FILES:${PN} += "${PYTHON_SITEPACKAGES_DIR}"
-
-RDEPENDS:${PN} = " \
+RDEPENDS:${PN} += " \
     python3-core \
 "

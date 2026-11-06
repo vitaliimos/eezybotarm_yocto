@@ -18,9 +18,19 @@ inherit python3-dir
 
 COMPATIBLE_HOST = "aarch64.*-linux"
 
+python do_configure() {
+    py_ver = d.getVar('PYTHON_BASEVERSION')
+    if py_ver != '3.14':
+        bb.fatal(f"{d.getVar('PN')} contains pre-built aarch64 binaries compiled for Python 3.14 ABI (cp314), but target PYTHON_BASEVERSION is '{py_ver}'.")
+}
+
 do_install() {
     install -d ${D}${PYTHON_SITEPACKAGES_DIR}
-    cp -r ${S}/cuda* ${D}${PYTHON_SITEPACKAGES_DIR}/
+    cp -R --no-preserve=ownership ${S}/cuda* ${D}${PYTHON_SITEPACKAGES_DIR}/
+    chown -R root:root ${D}${PYTHON_SITEPACKAGES_DIR}
+    find ${D}${PYTHON_SITEPACKAGES_DIR} -type d -exec chmod 0755 {} +
+    find ${D}${PYTHON_SITEPACKAGES_DIR} -type f -name "*.so*" -exec chmod 0755 {} +
+    find ${D}${PYTHON_SITEPACKAGES_DIR} -type f ! -name "*.so*" -exec chmod 0644 {} +
 }
 
 FILES:${PN} += "${PYTHON_SITEPACKAGES_DIR}"
