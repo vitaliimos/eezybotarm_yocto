@@ -44,7 +44,7 @@ EEZYBOT_WIFI_PASSWORD ?= ""
 python warn_missing_ssh_keys() {
     if not (d.getVar('EEZYBOT_SSH_PUBLIC_KEYS', False) or '').strip():
         bb.warn('EEZYBOT_SSH_PUBLIC_KEYS is unset - the image will have no '
-                'way to log in over SSH. Create meta-eezybot/conf/credentials.inc '
+                'way to log in over SSH. Create meta-eezybot-distro/conf/credentials.inc '
                 'from credentials.inc.template.')
 }
 do_rootfs[prefuncs] += "warn_missing_ssh_keys"

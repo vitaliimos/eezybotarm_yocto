@@ -34,7 +34,7 @@ This repository contains the Yocto/OpenEmbedded project for building an embedded
   ```
 
 ## Layer Architecture & Recipes
-* **`meta-eezybot/`**: Custom project layer.
+* **`meta-eezybot/`**: Software / Application layer packaging the EezyBotArm ROS 2 stack, AI models, and Python dependencies:
   * **`recipes-ros2/eezybotarm/`**: Recipes packaging the ROS 2 workspace:
     * `eezybotarm-app.inc`: Defines git repository URL and commit revision (`EEZYBOT_ROS_APP_GIT_REV`).
     * `eezybotarm-bringup`: Systemd unit (`eezybotarm.service`) and first-boot TensorRT engine builder (`eezybotarm-ensure-engine.sh`).
@@ -42,12 +42,14 @@ This repository contains the Yocto/OpenEmbedded project for building an embedded
     * `eezybotarm-control`, `eezybotarm-description`, `eezybotarm-hardware`, `eezybotarm-interfaces`, `eezybotarm-moveit-config`, `eezybotarm-vision`.
   * **`recipes-model/`**:
     * `cube-detection-model`: Deploys `model.onnx` (and optional precompiled `model.engine`) into `/usr/share/models/`.
-  * **`recipes-devtools/python/`**: Custom Python recipes and bbappends for AI & dashboard (`python3-cuda-python`, `python3-onnxruntime`, `python3-nicegui`, `python3-vbuild`, `python3-markdown2`, `python3-tinycss2`).
+  * **`recipes-devtools/python/`**: Custom Python recipes for AI & dashboard (`python3-cuda-python`, `python3-onnxruntime`, `python3-nicegui`, `python3-vbuild`, `python3-markdown2`).
+* **`meta-eezybot-distro/`**: Distro & Platform Integration layer:
+  * **`conf/distro/eezybot.conf`**: Distro policy (`systemd`, `DISTRO_FEATURES`, kernel module autoloading, and `meta-ros` configuration).
+  * **`conf/credentials.inc`**: WiFi SSIDs and SSH public keys (gitignored).
   * **`recipes-core/images/`**: `eezybot-image.bb` (production) and `eezybot-image-dev.bb` (dev tooling).
   * **`recipes-core/packagegroups/`**: `packagegroup-eezybot-core.bb` and `packagegroup-eezybot-dev.bb`.
-  * **`recipes-bbappends/linux/`**: Kernel configuration fragment (`linux-noble-nvidia-tegra`).
-  * **`conf/credentials.inc`**: WiFi SSIDs and SSH public keys (gitignored).
-* **`meta-ros-tegra-fixes/`**: Upstream integration fixes and workarounds for `meta-ros` and `meta-tegra` (`cv-bridge`, `moveit-py`, `v4l2-camera`).
+  * **`recipes-connectivity/wpa-supplicant/`**: Enables `wpa_supplicant@wlan0.service`.
+  * **`recipes-bbappends/`**: Kernel configuration fragment (`linux-noble-nvidia-tegra`) and upstream integration fixes (`cv-bridge`, `moveit-py`, `v4l2-camera`, `python3-tinycss2`).
 
 ## Relationship with ROS 2 Workspace (`../eeazybot`)
 * ROS 2 development is done in `../eeazybot`.

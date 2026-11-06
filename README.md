@@ -8,7 +8,7 @@ Yocto/OpenEmbedded build for an NVIDIA Jetson device, configured with
 | `eezybot-image`      | production | minimal console image: ROS 2 (Jazzy), EezyBotArm (auto-start, headless), SSH |
 | `eezybot-image-dev`  | development| production + dev tools (Python pip/venv, nano/vim, i2c-tools, gdb, iw) |
 
-Both are built from the `eezybot` distro defined in the local `meta-eezybot/` layer
+Both are built from the `eezybot` distro defined in the local `meta-eezybot-distro/` layer
 on machine `jetson-orin-nano-devkit-nvme` (rootfs on the M.2 NVMe drive). To boot
 from a microSD card instead, switch the machine to `jetson-orin-nano-devkit`
 in `kas/base.yml`.
@@ -38,7 +38,7 @@ Network access is required on the first build (source fetching).
 
 ### Credentials
 
-All secrets live in `meta-eezybot/conf/credentials.inc` (gitignored; copy it from
+All secrets live in `meta-eezybot-distro/conf/credentials.inc` (gitignored; copy it from
 `credentials.inc.template` and fill in the values):
 
 - `EEZYBOT_WIFI_SSID` / `EEZYBOT_WIFI_PASSWORD` — Wi-Fi network (enables
